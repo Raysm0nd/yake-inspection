@@ -1,0 +1,19 @@
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime logs / cache
+*.log
+split_log.json
+split_cache.json
+
+# Legacy architecture (superseded, not maintained)
+legacy/
+
+# Test images (45MB); two representative samples are force-added
+test_data/

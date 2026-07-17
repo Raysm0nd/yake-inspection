@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>玻璃瑕疵檢測系統</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- MODAL（dashboard 預留） -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="if(event.target===this)closeShotModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span id="modal-title-main">Shot 詳細</span>
+        <small id="modal-title-sub"></small>
+      </div>
+      <button class="icon-btn" onclick="closeShotModal()" aria-label="關閉">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="app">
+  <!-- TOPBAR：標題 + 頁籤 + KPI/篩選器（依 view 顯示）+ 主題 -->
+  <header class="topbar">
+    <div class="topbar-title">玻璃瑕疵檢測系統</div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" data-tab="visual">Visual</button>
+      <button class="tab" data-tab="dashboard">Dashboard</button>
+    </div>
+
+    <!-- Dashboard 專用的 KPI + 篩選器 -->
+    <div class="topbar-stat" data-view-only="dashboard">
+      <span class="kpi-dot" style="background:#4f9ea3"></span>
+      Yake（刮痕）四邊總缺陷數
+      <b id="kv-yake">—</b>
+      <span id="mock-indicator" style="display:none; color:#f25a5a; font-weight:600; margin-left:6px"
+            title="資料庫沒有資料或後端連線失敗，目前顯示的是前端隨機產生的模擬資料">⚠ 模擬資料</span>
+    </div>
+    <div class="topbar-divider" data-view-only="dashboard"></div>
+    <div class="filter-group" data-view-only="dashboard">
+      <span class="filter-label">日期</span>
+      <input type="date" id="f-date-from" class="filter-input">
+      <span class="filter-sep">~</span>
+      <input type="date" id="f-date-to" class="filter-input">
+    </div>
+    <div class="filter-group" data-view-only="dashboard">
+      <span class="filter-label">時間</span>
+      <input type="number" id="f-hour-from" class="filter-input" min="0" max="23" value="0">
+      <span class="filter-sep">~</span>
+      <input type="number" id="f-hour-to" class="filter-input" min="0" max="23" value="23">
+      <span class="filter-sep">時</span>
+      <span id="hour-available-hint" class="filter-hint" title="資料庫中實際存在資料的時段"></span>
+    </div>
+    <div class="filter-group" data-view-only="dashboard">
+      <span class="filter-label">基板 ID</span>
+      <select id="f-substrate" class="filter-select">
+        <option value="all">全部</option>
+      </select>
+    </div>
+    <button class="filter-clear" data-view-only="dashboard" onclick="Dashboard.resetFilters()">清除篩選</button>
+
+    <div style="flex:1"></div>
+    <button class="icon-btn" data-theme-toggle aria-label="切換主題">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+
+    <!-- ============ VISUAL VIEW ============ -->
+    <section class="view" id="view-visual">
+      <!-- Controls -->
+      <div class="card">
+        <div class="visual-controls">
+          <button class="btn btn-primary" id="vc-pick-folder">📁 選擇資料夾</button>
+          <button class="btn btn-primary" id="vc-pick-file">🖼 選擇單張</button>
+          <input type="text" id="vf-folder" class="filter-input"
+                 placeholder="尚未選擇（也可直接貼路徑後按 Enter）" />
+          <select id="vf-filter" class="filter-select" title="資料夾模式下的分類過濾">
+            <option value="all">全部</option>
+            <option value="ng">僅 NG</option>
+            <option value="gray">僅 GRAY</option>
+            <option value="ok">僅 OK</option>
+          </select>
+          <button class="btn" id="vc-prev">◀ Prev</button>
+          <button class="btn" id="vc-next">Next ▶</button>
+          <button class="btn btn-primary" id="vc-save">💾 儲存本塊到 DB</button>
+          <button class="btn btn-primary" id="vc-save-all"
+                  title="把目前載入的全部塊都偵測並寫進 DB（存到正式輸出夾）">💾 儲存全部</button>
+          <span class="visual-status" id="visual-status-text">等待載入…</span>
+        </div>
+      </div>
+
+      <!-- Threshold panel -->
+      <div class="card">
+        <div class="card-header" style="margin-bottom: var(--space-3)">
+          <div style="display:flex; align-items:baseline; gap:var(--space-3); flex-wrap:wrap">
+            <div class="card-title">偵測閥值</div>
+            <div class="card-sub">拖動滑桿後鬆開即重新偵測；參數會傳給後端的 process.py 演算法</div>
+          </div>
+          <div style="display:flex; gap:var(--space-2)">
+            <button class="btn" id="vc-reset">重設預設值</button>
+            <button class="btn btn-primary" id="vc-apply"
+                    title="把目前參數寫回 split_config.json，供生產端 watch.py 沿用">✅ 套用為正式參數</button>
+          </div>
+        </div>
+        <div class="threshold-panel" id="threshold-panel"></div>
+      </div>
+
+      <!-- Two image panes -->
+      <div class="visual-panes">
+        <div class="image-pane">
+          <div class="image-pane-header">
+            <span>原圖 + 偵測框</span>
+            <div class="bbox-legend">
+              <span class="swatch"><span style="background:#f25a5a"></span>NG</span>
+              <span class="swatch"><span style="background:#ffd23f"></span>GRAY</span>
+              <span class="swatch"><span style="background:#6fdc8c"></span>OK</span>
+            </div>
+          </div>
+          <div class="image-pane-canvas-wrap">
+            <canvas id="cv-image"></canvas>
+            <div class="loading" id="visual-loading">偵測中…</div>
+          </div>
+        </div>
+        <div class="image-pane">
+          <div class="image-pane-header">
+            <span>白斑遮罩</span>
+            <span style="color:var(--color-text-faint)">黃色 = mask 為真</span>
+          </div>
+          <div class="image-pane-canvas-wrap">
+            <canvas id="cv-mask"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ DASHBOARD VIEW ============ -->
+    <section class="view" id="view-dashboard">
+      <div class="split-grid">
+        <!-- LEFT: overview -->
+        <section class="card overview-card">
+          <div class="card-header">
+            <div class="card-title">玻璃缺陷空間分布</div>
+            <div class="mini-edges-wrap">
+              <canvas id="mini-edges"></canvas>
+            </div>
+            <button class="chip on-yake" data-type="yake" onclick="Dashboard.toggleType('yake', this)">● Yake</button>
+          </div>
+          <div class="map-grid" id="map-grid">
+            <span class="corner"></span>
+            <div class="dist-panel dist-top selected" id="dp-top" data-edge="top">
+              <canvas id="cv-top"></canvas>
+              <span class="edge-label">Y2</span>
+            </div>
+            <span class="corner"></span>
+
+            <div class="dist-panel dist-left" id="dp-left" data-edge="left">
+              <canvas id="cv-left"></canvas>
+              <span class="edge-label">X2</span>
+            </div>
+            <div class="glass-wrap" id="glass-wrap">
+              <canvas id="glass-cv"></canvas>
+            </div>
+            <div class="dist-panel dist-right" id="dp-right" data-edge="right">
+              <canvas id="cv-right"></canvas>
+              <span class="edge-label">X1</span>
+            </div>
+
+            <span class="corner"></span>
+            <div class="dist-panel dist-bottom" id="dp-bottom" data-edge="bottom">
+              <canvas id="cv-bottom"></canvas>
+              <span class="edge-label">Y1</span>
+            </div>
+            <span class="corner"></span>
+          </div>
+        </section>
+
+        <!-- RIGHT: detail -->
+        <section class="card detail-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title" id="detail-card-title"><b id="detail-edge-name">Y2</b> 各 Shot 區間缺陷分布</div>
+              <div class="card-sub" id="detail-card-sub">點擊左側折線圖中的區間（可多選），右側將列出該區間的基板 ID</div>
+            </div>
+            <button class="filter-clear" id="clear-intervals-btn" onclick="Dashboard.clearIntervalSelection()" style="display:none">清除選取</button>
+          </div>
+          <div class="detail-canvas-wrap" id="detail-canvas-wrap">
+            <canvas id="detail-cv"></canvas>
+          </div>
+          <div class="detail-list" id="detail-list" style="display:none"></div>
+        </section>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- View-specific topbar elements 顯示控制 -->
+<style>
+  [data-view-only] { display: none; }
+  body:has(#view-dashboard.active) [data-view-only="dashboard"] { display: flex; }
+  body:has(#view-visual.active) [data-view-only="visual"] { display: flex; }
+  .topbar-divider[data-view-only] { display: none; }
+  body:has(#view-dashboard.active) .topbar-divider[data-view-only="dashboard"] { display: block; }
+</style>
+
+<script src="dashboard.js"></script>
+<script src="visual.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

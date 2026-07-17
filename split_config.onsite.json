@@ -1,0 +1,19 @@
+{
+  "input_folder": "Y:\\TanmenTrace",
+  "split_output_folder": "D:\\split_data\\kake_onsite",
+  "date_ranges": [
+    {
+      "name": "現場 2026-01-01 測試",
+      "date_start": "20260101",
+      "date_end": "20260101"
+    }
+  ],
+  "valid_prefixes": ["CenterImage"],
+  "exclude_suffix": ["001","111", "112", "131", "132", "186", "151", "152"],
+  "split_size": 20,
+  "max_workers": 4,
+  "chunk_size": 200,
+  "enable_file_cache": false,
+  "enable_db_insert": true,
+  "defect_status_to_save": ["NG", "GRAY"]
+}

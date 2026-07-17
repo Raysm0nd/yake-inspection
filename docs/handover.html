@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yake 玻璃瑕疵檢測系統 — 交接文件</title>
+<style>
+  :root {
+    --ink: #1f2933;
+    --ink-soft: #52606d;
+    --ink-faint: #7b8794;
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --line: #e4e7eb;
+    --teal: #01696f;
+    --teal-soft: #e0f0f1;
+    --amber: #b45309;
+    --amber-soft: #fef3c7;
+    --red: #b91c1c;
+    --red-soft: #fee2e2;
+    --green: #15803d;
+    --green-soft: #dcfce7;
+    --violet: #6d28d9;
+    --violet-soft: #ede9fe;
+    --blue: #1d4ed8;
+    --blue-soft: #dbeafe;
+    --mono: Consolas, "Cascadia Mono", "Courier New", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body {
+    font-family: "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    background: var(--bg); color: var(--ink);
+    line-height: 1.75; font-size: 15px;
+  }
+  .layout { display: flex; max-width: 1280px; margin: 0 auto; }
+  nav.toc {
+    width: 240px; flex-shrink: 0; position: sticky; top: 0;
+    height: 100vh; overflow-y: auto; padding: 28px 8px 40px 16px;
+    border-right: 1px solid var(--line); background: var(--card);
+  }
+  nav.toc .toc-title { font-weight: 700; font-size: 13px; color: var(--ink-faint); letter-spacing: .08em; margin-bottom: 10px; }
+  nav.toc a { display: block; color: var(--ink-soft); text-decoration: none; font-size: 13.5px; padding: 4px 8px; border-radius: 6px; }
+  nav.toc a:hover { background: var(--teal-soft); color: var(--teal); }
+  nav.toc a.sub { padding-left: 22px; font-size: 12.5px; color: var(--ink-faint); }
+  main { flex: 1; min-width: 0; padding: 36px 44px 100px; }
+  h1 { font-size: 30px; line-height: 1.3; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-soft); margin-bottom: 6px; }
+  .meta { font-size: 13px; color: var(--ink-faint); margin-bottom: 30px; }
+  h2 {
+    font-size: 22px; margin: 52px 0 16px; padding-top: 14px;
+    border-top: 3px solid var(--teal); color: var(--teal);
+  }
+  h2 .no { font-family: var(--mono); font-size: 15px; opacity: .6; margin-right: 8px; }
+  h3 { font-size: 17px; margin: 30px 0 10px; }
+  h4 { font-size: 15px; margin: 22px 0 8px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0 8px 24px; }
+  li { margin: 3px 0; }
+  code {
+    font-family: var(--mono); font-size: 13px;
+    background: #eef1f4; border: 1px solid var(--line);
+    border-radius: 4px; padding: 1px 5px; white-space: nowrap;
+  }
+  pre {
+    background: #212933; color: #e2e8f0; border-radius: 10px;
+    padding: 14px 18px; overflow-x: auto; margin: 12px 0;
+    font-family: var(--mono); font-size: 13px; line-height: 1.6;
+  }
+  pre code { background: none; border: none; padding: 0; color: inherit; white-space: pre; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; background: var(--card); font-size: 13.5px; }
+  th, td { border: 1px solid var(--line); padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: #eef1f4; font-weight: 600; white-space: nowrap; }
+  td code { white-space: normal; word-break: break-all; }
+  .tablewrap { overflow-x: auto; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 18px 22px; margin: 14px 0;
+  }
+  .callout { border-left: 4px solid; border-radius: 8px; padding: 12px 16px; margin: 14px 0; font-size: 14px; }
+  .callout.warn { border-color: var(--amber); background: var(--amber-soft); }
+  .callout.danger { border-color: var(--red); background: var(--red-soft); }
+  .callout.ok { border-color: var(--green); background: var(--green-soft); }
+  .callout.info { border-color: var(--blue); background: var(--blue-soft); }
+  .callout b:first-child { display: block; margin-bottom: 2px; }
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 999px;
+    padding: 1px 10px; vertical-align: 2px; letter-spacing: .03em;
+  }
+  .badge.get { background: var(--blue-soft); color: var(--blue); }
+  .badge.post { background: var(--green-soft); color: var(--green); }
+  .badge.fixed { background: var(--green-soft); color: var(--green); }
+  .badge.todo { background: var(--amber-soft); color: var(--amber); }
+  .badge.core { background: var(--teal-soft); color: var(--teal); }
+  .badge.legacy { background: #ececec; color: #6b7280; }
+  .fig { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 16px 0; overflow-x: auto; }
+  .fig figcaption { font-size: 13px; color: var(--ink-faint); margin-top: 10px; text-align: center; }
+  .fig svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .filetree { font-family: var(--mono); font-size: 13px; line-height: 1.9; }
+  .filetree .dir { color: var(--teal); font-weight: 700; }
+  .filetree .note { color: var(--ink-faint); }
+  .fn { margin: 14px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); overflow: hidden; }
+  .fn > .sig { font-family: var(--mono); font-size: 13px; background: #eef1f4; padding: 8px 14px; border-bottom: 1px solid var(--line); word-break: break-all; }
+  .fn > .body { padding: 10px 14px; font-size: 14px; }
+  .fn table { margin: 8px 0 4px; }
+  .anatomy { font-family: var(--mono); font-size: 15px; display: flex; flex-wrap: wrap; gap: 4px; align-items: stretch; margin: 10px 0; }
+  .anatomy .tok { border-radius: 8px; padding: 8px 10px 4px; text-align: center; }
+  .anatomy .tok small { display: block; font-family: inherit; font-size: 10.5px; opacity: .75; margin-top: 2px; font-weight: 600; }
+  .kbd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; margin: 12px 0; }
+  @media (max-width: 900px) { nav.toc { display: none; } main { padding: 24px 18px 80px; } }
+  @media print { nav.toc { display: none; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <div class="toc-title">目錄</div>
+  <a href="#overview">1. 系統是什麼</a>
+  <a href="#arch">2. 整體架構</a>
+  <a href="#env">3. 執行環境與安裝</a>
+  <a href="#tree">4. 目錄結構</a>
+  <a href="#naming">5. 命名規則（核心）</a>
+  <a class="sub" href="#naming-file">5.1 Segment 檔名解剖</a>
+  <a class="sub" href="#naming-shot">5.2 Shot 區間表</a>
+  <a class="sub" href="#naming-glass">5.3 玻璃四邊</a>
+  <a href="#algo">6. 偵測演算法圖解</a>
+  <a href="#config">7. split_config.json</a>
+  <a href="#schema">8. 資料庫 schema</a>
+  <a href="#code">9. 程式碼詳解</a>
+  <a class="sub" href="#code-split">9.1 split.py</a>
+  <a class="sub" href="#code-process">9.2 process.py</a>
+  <a class="sub" href="#code-db">9.3 db.py</a>
+  <a class="sub" href="#code-server">9.4 server.py</a>
+  <a class="sub" href="#code-seed">9.5 seed_records.py</a>
+  <a class="sub" href="#code-ui">9.6 前端 ui/</a>
+  <a href="#api">10. API 對照表</a>
+  <a href="#fixes">11. 2026-07-03 檢查與修復</a>
+  <a href="#limits">12. 已知限制與 Roadmap</a>
+  <a href="#ops">13. 操作速查與排錯</a>
+</nav>
+
+<main>
+
+<h1>Yake 玻璃瑕疵檢測系統 — 交接文件</h1>
+<p class="subtitle">白斑（Yake）瑕疵自動檢測 pipeline ＋ Web 品管／戰情 UI ＋ PostgreSQL，完整技術交接。</p>
+<p class="meta">最後更新：2026-07-03 ・ 本文件反映當日全面檢查與修復後的程式碼狀態 ・ 搭配 <code>CLAUDE.md</code>（AI 協作摘要）與 <code>schema.sql</code>（DDL）閱讀</p>
+
+<!-- ============================================================ -->
+<h2 id="overview"><span class="no">1</span>系統是什麼</h2>
+
+<p><b>Yake</b> 是一套玻璃基板白斑瑕疵的檢測與可視化系統。一句話描述三個組件的分工：</p>
+
+<div class="card">
+  <p>🏭 <b>Pipeline（process.py）是生產線</b> — 掃描產線原圖、沿長邊切 20 塊、逐塊跑白斑檢測、依 NG/GRAY/OK 分流存檔並批次寫入 PostgreSQL。</p>
+  <p>🔍 <b>Visual 分頁是品管站</b> — 載入切好的區塊，即時拉閥值滑桿做「二次確認」，滿意後按「儲存」把人工確認的結果覆寫回 DB。</p>
+  <p>📊 <b>Dashboard 分頁是戰情室</b> — 從 DB 撈記錄，畫出玻璃四邊（Y1/Y2/X1/X2）× Shot 區間的缺陷空間分布、可鑽取到基板 ID 明細。</p>
+</div>
+
+<p>PostgreSQL 的 <code>detection_records</code> 表是<b>唯一的資料真相</b>，兩個 UI 分頁都消費同一張表。</p>
+
+<!-- ============================================================ -->
+<h2 id="arch"><span class="no">2</span>整體架構</h2>
+
+<figure class="fig">
+<svg viewBox="0 0 900 430" font-family="Segoe UI, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52606d"/>
+    </marker>
+  </defs>
+  <!-- NAS -->
+  <rect x="20" y="30" width="180" height="86" rx="10" fill="#eef1f4" stroke="#c3cad2"/>
+  <text x="110" y="58" text-anchor="middle" font-weight="700">產線原圖（NAS）</text>
+  <text x="110" y="80" text-anchor="middle" fill="#52606d" font-size="11.5">date/hour/board_id/side/</text>
+  <text x="110" y="98" text-anchor="middle" fill="#52606d" font-size="11.5">CenterImageXXX_ShotYYY_ZZZ.jpg</text>
+  <!-- pipeline -->
+  <rect x="280" y="20" width="220" height="106" rx="10" fill="#e0f0f1" stroke="#01696f"/>
+  <text x="390" y="46" text-anchor="middle" font-weight="700" fill="#01696f">process.py（Pipeline）</text>
+  <text x="390" y="68" text-anchor="middle" font-size="11.5">scan → 切 20 塊 → 白斑檢測</text>
+  <text x="390" y="86" text-anchor="middle" font-size="11.5">ProcessPoolExecutor 平行</text>
+  <text x="390" y="104" text-anchor="middle" font-size="11.5">依 chunk 批次寫 DB</text>
+  <!-- output folder -->
+  <rect x="580" y="12" width="190" height="66" rx="10" fill="#fef3c7" stroke="#b45309"/>
+  <text x="675" y="38" text-anchor="middle" font-weight="700" fill="#b45309">切割區塊輸出資料夾</text>
+  <text x="675" y="58" text-anchor="middle" font-size="11.5">ng/ gray/ ok/ 依日期分流</text>
+  <!-- DB -->
+  <rect x="580" y="110" width="190" height="70" rx="10" fill="#ede9fe" stroke="#6d28d9"/>
+  <text x="675" y="138" text-anchor="middle" font-weight="700" fill="#6d28d9">PostgreSQL 17</text>
+  <text x="675" y="158" text-anchor="middle" font-size="11.5">yake.detection_records</text>
+  <!-- server -->
+  <rect x="330" y="230" width="240" height="96" rx="10" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="450" y="256" text-anchor="middle" font-weight="700" fill="#1d4ed8">server.py（FastAPI :8000）</text>
+  <text x="450" y="278" text-anchor="middle" font-size="11.5">/api/*　＋　StaticFiles 掛載 ui/</text>
+  <text x="450" y="298" text-anchor="middle" font-size="11.5">偵測核心直接共用 process.py</text>
+  <text x="450" y="316" text-anchor="middle" font-size="11.5">detect_defect_full()</text>
+  <!-- browser -->
+  <rect x="120" y="360" width="310" height="56" rx="10" fill="#dcfce7" stroke="#15803d"/>
+  <text x="275" y="384" text-anchor="middle" font-weight="700" fill="#15803d">瀏覽器 — Visual 分頁（品管站）</text>
+  <text x="275" y="404" text-anchor="middle" font-size="11.5">visual.js：滑桿調參 → /api/detect（唯讀）</text>
+  <rect x="470" y="360" width="310" height="56" rx="10" fill="#dcfce7" stroke="#15803d"/>
+  <text x="625" y="384" text-anchor="middle" font-weight="700" fill="#15803d">瀏覽器 — Dashboard 分頁（戰情室）</text>
+  <text x="625" y="404" text-anchor="middle" font-size="11.5">dashboard.js：/api/records → 四邊分布圖</text>
+  <!-- arrows -->
+  <line x1="200" y1="73" x2="275" y2="73" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="500" y1="50" x2="575" y2="44" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="500" y1="100" x2="575" y2="132" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="620" y1="185" x2="530" y2="226" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="530" y1="226" x2="620" y2="185" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="380" y1="330" x2="300" y2="356" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="300" y1="356" x2="380" y2="330" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="530" y1="330" x2="605" y2="356" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <line x1="605" y1="356" x2="530" y2="330" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr)"/>
+  <!-- visual reads segments note -->
+  <path d="M 240 388 C 60 380 40 200 285 126" fill="none" stroke="#b45309" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <text x="66" y="250" fill="#b45309" font-size="11.5" transform="rotate(-72 66 250)">Visual 讀切割區塊檔</text>
+</svg>
+<figcaption>圖 1 — 整體架構與資料流向。實線為主要資料流，虛線為 Visual 分頁對切割區塊檔案的讀取。</figcaption>
+</figure>
+
+<h3>DB 寫入只有兩個入口</h3>
+<div class="callout danger">
+<b>⚠ 鐵律：<code>/api/detect</code> 絕對不寫 DB</b>
+拖動滑桿每次鬆手都會打 <code>/api/detect</code>，如果它寫 DB，一次調參就會炸出上百筆垃圾記錄（這是 2026-07-02 修掉的歷史 bug，別改回去）。寫入只有：
+① <code>process.py</code> pipeline 主流程的 <code>bulk_insert_records()</code>；② Visual 儲存鈕的 <code>POST /api/save-detection</code>。
+兩者現在都有<b>覆寫語意</b>：同一 <code>segment_path</code> 重跑／重存會取代舊記錄，不會累積重複。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="env"><span class="no">3</span>執行環境與安裝</h2>
+
+<div class="tablewrap"><table>
+<tr><th>項目</th><th>版本／設定</th><th>備註</th></tr>
+<tr><td>OS</td><td>Windows 11</td><td>路徑處理都以反斜線為主（<code>extract_path_meta</code> 會先統一）</td></tr>
+<tr><td>Python</td><td>3.10（Microsoft Store 版）</td><td><code>PythonSoftwareFoundation.Python.3.10</code></td></tr>
+<tr><td>PostgreSQL</td><td>17（本機 Windows 服務）</td><td>DB=<code>yake</code>，應用帳號=<code>yake_app</code>（<b>非</b> table owner）</td></tr>
+<tr><td>前端</td><td>純 vanilla JS + Canvas</td><td>無打包器；FastAPI StaticFiles 直接吐 <code>ui/</code></td></tr>
+</table></div>
+
+<pre><code>pip install fastapi uvicorn "psycopg[binary,pool]" python-dotenv
+pip install pillow numpy scipy opencv-python</code></pre>
+
+<p><code>.env</code>（勿外流；範本見 <code>.env.example</code>）：</p>
+<pre><code>PG_HOST=localhost
+PG_PORT=5432
+PG_DB=yake
+PG_USER=yake_app
+PG_PASSWORD=ADT123;
+PG_POOL_MIN=1
+PG_POOL_MAX=10</code></pre>
+
+<div class="callout info">
+<b>ℹ 帳號權限現況</b>
+<code>yake_app</code> 只有 DML 權限（SELECT/INSERT/UPDATE/DELETE），<b>不是</b> <code>detection_records</code> 的 owner，因此程式無法自行建索引／改表。DDL 變更（包含 <code>schema.sql</code> 尾端待套用的唯一索引）需要用 postgres 或 owner 帳號執行。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="tree"><span class="no">4</span>目錄結構</h2>
+
+<div class="card filetree">
+<div><span class="dir">d:\yake_test2\</span></div>
+<div>├─ <b>server.py</b> <span class="note">— FastAPI 後端：/api/* + 掛載 ui/ 靜態檔</span></div>
+<div>├─ <b>process.py</b> <span class="note">— Pipeline 主體：切割＋檢測＋DB 寫入；含 canonical parser（唯一實作）</span></div>
+<div>├─ <b>split.py</b> <span class="note">— 檔案掃描、日期範圍、config／log／cache 讀寫（process.py 的基座）</span></div>
+<div>├─ <b>db.py</b> <span class="note">— PostgreSQL 連線池與 CRUD helper</span></div>
+<div>├─ <b>seed_records.py</b> <span class="note">— 灌固定種子假資料，UI 空跑用</span></div>
+<div>├─ <b>schema.sql</b> <span class="note">— detection_records 完整 DDL（2026-07-03 由線上 DB 落地）</span></div>
+<div>├─ <b>split_config.json</b> <span class="note">— pipeline 全部可調參數（§7）</span></div>
+<div>├─ split_log.json <span class="note">— pipeline 執行紀錄（自動產生）</span></div>
+<div>├─ .env / .env.example <span class="note">— DB 連線設定（.env 勿 commit）</span></div>
+<div>├─ CLAUDE.md <span class="note">— AI 協作用專案摘要</span></div>
+<div>├─ <span class="dir">ui\</span> <span class="note">— 單頁應用（無打包器）</span></div>
+<div>│&nbsp;&nbsp; ├─ index.html <span class="note">— 唯一入口：topbar＋tab＋兩個 view</span></div>
+<div>│&nbsp;&nbsp; ├─ app.js <span class="note">— tab／主題切換、resize 轉發、共用 boot</span></div>
+<div>│&nbsp;&nbsp; ├─ visual.js <span class="note">— Visual view（品管站）</span></div>
+<div>│&nbsp;&nbsp; ├─ dashboard.js <span class="note">— Dashboard view（戰情室）</span></div>
+<div>│&nbsp;&nbsp; └─ styles.css <span class="note">— 全部 CSS（深淺主題 tokens）</span></div>
+<div>├─ <span class="dir">docs\</span> handover.html <span class="note">— 本文件</span></div>
+<div>├─ <span class="dir">legacy\</span> <span class="note">— 已淘汰舊架構（見 legacy/README.md），不再維護</span></div>
+<div>└─ <span class="dir">tess_data\</span> <span class="note">— 本機測試用產線原圖（45.8MB，split_config 目前指向它）</span></div>
+</div>
+
+<p>執行時還會出現兩個可再生檔（已於整理時刪除、之後會自動重建）：<code>process_run.log</code>（pipeline log）與 <code>split_cache.json</code>（檔案掃描快取，僅 <code>enable_file_cache=true</code> 時產生）。</p>
+
+<!-- ============================================================ -->
+<h2 id="naming"><span class="no">5</span>命名規則（核心業務邏輯）</h2>
+
+<p>整個系統的欄位推導全部掛在檔名與路徑的約定上，<b>這一節是最不能改壞的部分</b>。</p>
+
+<h3 id="naming-file">5.1 Segment 檔名解剖</h3>
+
+<p>Pipeline 輸出的每個切割區塊檔名為固定格式（由 <code>split_and_detect_single</code> 組出、由 <code>parse_segment_filename</code> 解回）：</p>
+
+<div class="card">
+<div class="anatomy">
+  <span class="tok" style="background:var(--teal-soft); color:var(--teal)">20250401<small>date（8 碼）</small></span>
+  <span class="tok">_</span>
+  <span class="tok" style="background:var(--blue-soft); color:var(--blue)">00<small>hour（2 碼）</small></span>
+  <span class="tok">_</span>
+  <span class="tok" style="background:var(--violet-soft); color:var(--violet)">C2QX45Y311011601<small>board_id（基板）</small></span>
+  <span class="tok">_</span>
+  <span class="tok" style="background:var(--amber-soft); color:var(--amber)">Y2<small>side（四邊）</small></span>
+  <span class="tok">_</span>
+  <span class="tok" style="background:var(--green-soft); color:var(--green)">CenterImage001_Shot002_021<small>base_name（原圖檔名，內含底線！）</small></span>
+  <span class="tok">_</span>
+  <span class="tok" style="background:var(--red-soft); color:var(--red)">05<small>segment_index（01..20）</small></span>
+  <span class="tok">.jpg</span>
+</div>
+</div>
+
+<div class="callout warn">
+<b>⚠ 為什麼不能用 <code>split('_')</code> 一路拆到底</b>
+<code>base_name</code> 本身含底線（<code>CenterImage001_Shot002_021</code>），所以解析必須用「固定位置」邏輯：前 4 段（date, hour, board_id, side）＋最後 1 段（segment_index）固定，<b>中間全部 join 回去</b>當 base_name。唯一的正確實作是 <code>process.parse_segment_filename()</code>，server 的 <code>/api/save-detection</code> 也用它 — 需要解析檔名時<b>一律呼叫它，不要自己寫</b>。
+</div>
+
+<p>產線原圖的路徑約定（pipeline 輸入側）：</p>
+<pre><code>&lt;input_folder&gt;\&lt;date&gt;\&lt;hour&gt;\&lt;board_id&gt;\&lt;side&gt;\CenterImageXXX_ShotYYY_ZZZ.jpg
+                └ 20250401  └ 00   └ C2QX...   └ Y2（倒數第二層就是 side）</code></pre>
+
+<h3 id="naming-shot">5.2 Shot 區間表與 shot_number 推導</h3>
+
+<div class="tablewrap"><table>
+<tr><th>邊</th><th>區間數</th><th>shot_label 清單</th></tr>
+<tr><td>短邊 Y1、Y2</td><td>6</td><td><code>Shot002_021</code> <code>Shot022_041</code> <code>Shot042_061</code> <code>Shot062_081</code> <code>Shot082_101</code> <code>Shot102_121</code></td></tr>
+<tr><td>長邊 X1、X2</td><td>10</td><td>短邊 6 個 ＋ <code>Shot122_141</code> <code>Shot142_161</code> <code>Shot162_181</code> <b><code>Shot182_185</code></b></td></tr>
+</table></div>
+
+<div class="callout danger">
+<b>⚠ 長邊末段是 <code>Shot182_185</code>，不是 <code>Shot182_196</code></b>
+這是實際產線資料的邊界。此常量現在存在於兩處，改規格時<b>必須同步</b>：
+<code>ui/dashboard.js</code> 的 <code>LONG_INTERVALS</code>、<code>seed_records.py</code> 的 <code>LONG_INTERVALS</code>。
+（process.py 內原本第三份 legacy 常量已於 2026-07-03 移除。）
+</div>
+
+<p><b>shot_number 推導</b>：每個 shot_label 名義上涵蓋 20 個實體 shot，原圖切成 20 塊剛好一塊對應一個 shot：</p>
+<pre><code>shot_number = 區間起點 + segment_index − 1     # 再 clip 到區間終點
+# 例：Shot002_021 的第 5 塊 → 2 + 5 − 1 = 6
+# 例：Shot182_185 的第 20 塊 → clip 到 185（末段不足 20 個 shot）</code></pre>
+<p>實作：<code>process._shot_number_for_segment()</code>。</p>
+
+<h3 id="naming-glass">5.3 玻璃四邊與 Dashboard 的對應</h3>
+
+<figure class="fig">
+<svg viewBox="0 0 560 360" font-family="Segoe UI, sans-serif" font-size="13">
+  <rect x="150" y="60" width="260" height="240" rx="6" fill="#e0f0f1" stroke="#01696f" stroke-width="2"/>
+  <text x="280" y="185" text-anchor="middle" fill="#01696f" font-weight="700">玻璃基板</text>
+  <text x="280" y="205" text-anchor="middle" fill="#52606d" font-size="11.5">Dashboard 畫布 1500 × 1850</text>
+  <!-- edges -->
+  <rect x="150" y="30" width="260" height="20" rx="4" fill="#fef3c7" stroke="#b45309"/>
+  <text x="280" y="24" text-anchor="middle" fill="#b45309" font-weight="700">Y2（top・短邊・6 區間）</text>
+  <rect x="150" y="310" width="260" height="20" rx="4" fill="#fef3c7" stroke="#b45309"/>
+  <text x="280" y="348" text-anchor="middle" fill="#b45309" font-weight="700">Y1（bottom・短邊・6 區間）</text>
+  <rect x="120" y="60" width="20" height="240" rx="4" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="105" y="185" text-anchor="middle" fill="#1d4ed8" font-weight="700" transform="rotate(-90 105 185)">X2（left・長邊・10 區間）</text>
+  <rect x="420" y="60" width="20" height="240" rx="4" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="456" y="185" text-anchor="middle" fill="#1d4ed8" font-weight="700" transform="rotate(90 456 185)">X1（right・長邊・10 區間）</text>
+  <!-- margin band -->
+  <rect x="150" y="60" width="260" height="14" fill="rgba(1,105,111,.12)"/>
+  <rect x="150" y="286" width="260" height="14" fill="rgba(1,105,111,.12)"/>
+  <rect x="150" y="60" width="14" height="240" fill="rgba(1,105,111,.12)"/>
+  <rect x="396" y="60" width="14" height="240" fill="rgba(1,105,111,.12)"/>
+  <text x="280" y="255" text-anchor="middle" fill="#52606d" font-size="11">內圈淺色帶 = 邊緣帶（0..70mm），缺陷點目前以雜湊隨機撒在此帶內（非真實座標）</text>
+</svg>
+<figcaption>圖 2 — 玻璃四邊與 Dashboard 的 edge 對應：<code>Y2=top, Y1=bottom, X2=left, X1=right</code>（見 dashboard.js 的 <code>SIDE_TO_EDGE</code>）。</figcaption>
+</figure>
+
+<div class="callout warn">
+<b>⚠ Dashboard 上的點位不是真實座標</b>
+<code>recordsToDefects()</code> 只用 shot_label 的中點決定「沿邊方向」的位置，再用確定性雜湊把點撒在邊緣帶 0..70mm 內 — 純視覺呈現。要顯示真實位置需做 bboxes → 玻璃物理座標的映射（Roadmap 第 3 項）。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="algo"><span class="no">6</span>偵測演算法圖解</h2>
+
+<p>唯一實作在 <code>process.detect_defect_full()</code>（server 的 <code>/api/detect</code> 直接呼叫同一函式，2026-07-03 起不再有第二份拷貝）。五個步驟：</p>
+
+<figure class="fig">
+<svg viewBox="0 0 880 150" font-family="Segoe UI, sans-serif" font-size="12.5">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#52606d"/>
+    </marker>
+  </defs>
+  <g>
+    <rect x="10" y="30" width="150" height="76" rx="10" fill="#eef1f4" stroke="#c3cad2"/>
+    <text x="85" y="58" text-anchor="middle" font-weight="700">① 灰階化</text>
+    <text x="85" y="78" text-anchor="middle" font-size="11">gray = 三通道平均</text>
+    <text x="85" y="94" text-anchor="middle" font-size="11">（BGR/RGB 皆可）</text>
+  </g>
+  <g>
+    <rect x="188" y="30" width="150" height="76" rx="10" fill="#fef3c7" stroke="#b45309"/>
+    <text x="263" y="58" text-anchor="middle" font-weight="700">② 二值化遮罩</text>
+    <text x="263" y="78" text-anchor="middle" font-size="11">mask = gray &gt;</text>
+    <text x="263" y="94" text-anchor="middle" font-size="11">threshold（預設 100）</text>
+  </g>
+  <g>
+    <rect x="366" y="30" width="150" height="76" rx="10" fill="#dbeafe" stroke="#1d4ed8"/>
+    <text x="441" y="58" text-anchor="middle" font-weight="700">③ 連通區域</text>
+    <text x="441" y="78" text-anchor="middle" font-size="11">scipy ndimage.label</text>
+    <text x="441" y="94" text-anchor="middle" font-size="11">→ 原始 bbox 群</text>
+  </g>
+  <g>
+    <rect x="544" y="30" width="150" height="76" rx="10" fill="#ede9fe" stroke="#6d28d9"/>
+    <text x="619" y="58" text-anchor="middle" font-weight="700">④ 鄰近合併</text>
+    <text x="619" y="78" text-anchor="middle" font-size="11">Union-Find，距離 ≤</text>
+    <text x="619" y="94" text-anchor="middle" font-size="11">merge_dist（預設 30px）</text>
+  </g>
+  <g>
+    <rect x="722" y="30" width="150" height="76" rx="10" fill="#dcfce7" stroke="#15803d"/>
+    <text x="797" y="58" text-anchor="middle" font-weight="700">⑤ 分級</text>
+    <text x="797" y="78" text-anchor="middle" font-size="11">每個合併框依長寬／</text>
+    <text x="797" y="94" text-anchor="middle" font-size="11">面積判 NG / GRAY / OK</text>
+  </g>
+  <line x1="160" y1="68" x2="184" y2="68" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr2)"/>
+  <line x1="338" y1="68" x2="362" y2="68" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr2)"/>
+  <line x1="516" y1="68" x2="540" y2="68" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr2)"/>
+  <line x1="694" y1="68" x2="718" y2="68" stroke="#52606d" stroke-width="1.6" marker-end="url(#arr2)"/>
+</svg>
+<figcaption>圖 3 — <code>detect_defect_full()</code> 的五步驟。面積（area）算的是合併框內 mask 為真的像素數，不是框面積。</figcaption>
+</figure>
+
+<h3>分級規則（<code>_classify_spot</code>）</h3>
+<div class="tablewrap"><table>
+<tr><th>等級</th><th>條件（w/h 為合併框長寬，area 為框內白像素數）</th><th>預設閥值</th></tr>
+<tr><td><b style="color:var(--red)">NG</b></td><td><code>w ≥ len_ng</code> 或 <code>h ≥ len_ng</code> 或 <code>area ≥ area_ng</code></td><td>len_ng=10、area_ng=40</td></tr>
+<tr><td><b style="color:var(--amber)">GRAY</b></td><td><code>len_gray_min &lt; w &lt; len_ng</code> 或同對 h，或 <code>area_gray_min ≤ area &lt; area_ng</code></td><td>len_gray_min=5、area_gray_min=20</td></tr>
+<tr><td><b style="color:var(--green)">OK</b></td><td>其餘</td><td>—</td></tr>
+</table></div>
+<p>整塊區塊的總判定：有任一 NG 框 → NG；否則有任一 GRAY 框 → GRAY；否則 OK。</p>
+
+<!-- ============================================================ -->
+<h2 id="config"><span class="no">7</span>split_config.json 全欄位</h2>
+
+<div class="tablewrap"><table>
+<tr><th>欄位</th><th>型別／預設</th><th>宣告用意</th></tr>
+<tr><td><code>input_folder</code></td><td>string（必填）</td><td>產線原圖根目錄，其下第一層必須是 <code>YYYYMMDD</code> 日期資料夾</td></tr>
+<tr><td><code>split_output_folder</code></td><td>string（預設 <code>split_data\kake</code>）</td><td>切割區塊輸出根目錄，其下自動分 <code>ng/ gray/ ok/</code> 再分日期</td></tr>
+<tr><td><code>date_ranges</code></td><td>array（必填）</td><td>要處理的日期範圍，可多個：<code>{name, date_start, date_end}</code>（YYYYMMDD，含兩端）</td></tr>
+<tr><td><code>valid_prefixes</code></td><td>string[]（預設 <code>["LowerImage","UpperImage"]</code>）</td><td>檔名前綴白名單；本專案實際只收 <code>CenterImage</code></td></tr>
+<tr><td><code>exclude_suffix</code></td><td>string[]</td><td>檔名<b>結尾數字段</b>黑名單（比對 <code>re.search(r"(\d+)$")</code> 抓到的尾碼，如 <code>..._021.jpg</code> 的 021）</td></tr>
+<tr><td><code>split_size</code></td><td>int（預設 20）</td><td>一張原圖沿寬度切幾塊；<b>與 shot 對應關係綁死在 20</b>，改動要連 shot_number 推導一起想</td></tr>
+<tr><td><code>max_workers</code></td><td>int（預設 4）</td><td>ProcessPoolExecutor 子進程數</td></tr>
+<tr><td><code>chunk_size</code></td><td>int（預設 200）</td><td>每處理完幾<b>張圖</b>做一次 DB bulk insert（一張圖=split_size 筆 record）</td></tr>
+<tr><td><code>enable_file_cache</code></td><td>bool（預設 true；目前設 false）</td><td>檔案掃描快取（split_cache.json）。注意 Windows 目錄 mtime 對子目錄變動不敏感，NAS 大量增檔時快取可能不刷新 — 大 dataset 才開，開了要搭配 <code>--refresh-cache</code></td></tr>
+<tr><td><code>enable_db_insert</code></td><td>bool（預設 true）</td><td>pipeline 是否寫 DB；關掉就只做切割與檔案分流</td></tr>
+<tr><td><code>defect_status_to_save</code></td><td>string[]（預設全存）</td><td>哪些等級的區塊<b>輸出成檔案</b>（目前 <code>["NG","GRAY"]</code>，OK 不落檔但仍寫 DB record、segment_path 為 NULL）</td></tr>
+<tr><td><code>white_threshold</code></td><td>int（預設 100）</td><td>白斑亮度閥值（→ detect params 的 threshold）</td></tr>
+<tr><td><code>len_ng</code> / <code>area_ng</code></td><td>int（10 / 40）</td><td>NG 判定：框邊長 ≥ len_ng 或白像素數 ≥ area_ng</td></tr>
+<tr><td><code>len_gray_min</code> / <code>area_gray_min</code></td><td>int（5 / 20）</td><td>GRAY 判定下限（上限自動取 NG 閥值）</td></tr>
+<tr><td><code>merge_dist</code></td><td>int（30）</td><td>bbox 合併距離（px，框與框的最短間距）</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="schema"><span class="no">8</span>資料庫 schema（detection_records）</h2>
+
+<p>完整 DDL 已落地在 <code>schema.sql</code>（2026-07-03 由線上 DB 反向匯出，此前只能從 INSERT 語句反推）。重點：<b>19 欄、除 segment_path 外全部 NOT NULL</b>、9 個索引。</p>
+
+<div class="tablewrap"><table>
+<tr><th>欄位</th><th>型別</th><th>NULL</th><th>宣告用意</th></tr>
+<tr><td><code>id</code></td><td>BIGSERIAL PK</td><td>—</td><td>流水號</td></tr>
+<tr><td><code>inspect_ts</code></td><td>timestamptz</td><td>NOT NULL</td><td><b>產線時間</b>＝<code>date</code>+<code>hour</code> 組出（2026-07-03 起強制；此前誤用處理當下時間，舊資料已全數校正）</td></tr>
+<tr><td><code>date</code></td><td>char(8)</td><td>NOT NULL</td><td>YYYYMMDD，來自產線路徑</td></tr>
+<tr><td><code>hour</code></td><td>char(2)</td><td>NOT NULL</td><td>00..23；<b>產線非 24 小時連續，有缺口</b>（Dashboard 有提示）</td></tr>
+<tr><td><code>substrate_id</code></td><td>varchar(64)</td><td>NOT NULL</td><td>基板 ID（路徑 board_id 層）</td></tr>
+<tr><td><code>image_layer</code></td><td>varchar(32)</td><td>NOT NULL</td><td>目前恆為 <code>CenterImage</code></td></tr>
+<tr><td><code>source_image</code></td><td>varchar(255)</td><td>NOT NULL</td><td>原圖檔名（含副檔名）</td></tr>
+<tr><td><code>shot_number</code></td><td>integer</td><td>NOT NULL</td><td>此區塊對應的實體 shot（§5.2 推導）</td></tr>
+<tr><td><code>segment_index</code></td><td>integer</td><td>NOT NULL</td><td>1..split_size</td></tr>
+<tr><td><code>side</code></td><td>varchar(4)</td><td>NOT NULL</td><td>X1/X2/Y1/Y2，取自產線路徑倒數第二層（也編進 segment 檔名第 4 段）</td></tr>
+<tr><td><code>shot_label</code></td><td>varchar(32)</td><td>NOT NULL</td><td>如 <code>Shot002_021</code>；長邊末段 <code>Shot182_185</code></td></tr>
+<tr><td><code>defect_status</code></td><td>varchar(8)</td><td>NOT NULL</td><td>NG / GRAY / OK</td></tr>
+<tr><td><code>defect_type</code></td><td>varchar(32)</td><td>NOT NULL，預設 'yake'</td><td>schema 預留多類型，pipeline 目前只會寫 yake</td></tr>
+<tr><td><code>ng_count</code> / <code>gray_count</code></td><td>integer</td><td>NOT NULL，預設 0</td><td>此區塊內各級 bbox 數</td></tr>
+<tr><td><code>bboxes</code></td><td>jsonb</td><td>NOT NULL，預設 []</td><td><code>[{x0,y0,w,h,area,status}, ...]</code>（區塊內像素座標）</td></tr>
+<tr><td><code>detect_params</code></td><td>jsonb</td><td>NOT NULL，預設 {}</td><td>產生此紀錄時的閥值快照，追溯用</td></tr>
+<tr><td><code>segment_path</code></td><td>text</td><td><b>可 NULL</b></td><td>區塊檔案的絕對路徑；沒落檔（如 OK）為 NULL。<b>覆寫語意的 key</b></td></tr>
+<tr><td><code>created_at</code></td><td>timestamptz</td><td>NOT NULL，預設 now()</td><td>記錄寫入時間（與 inspect_ts 區分：一個是資料時間、一個是寫入時間）</td></tr>
+</table></div>
+
+<div class="callout warn">
+<b>⚠ NOT NULL 的實務影響</b>
+路徑 meta 不完整（抓不到 date/hour/board_id/side/shot_label）的圖，pipeline 會<b>照常輸出檔案但跳過 DB 寫入</b>並在 log 統計「meta 缺漏未寫 DB」— 這是刻意設計，避免一筆壞資料把整個 chunk 的 bulk insert 拖下水（db.py 另有整批失敗→逐筆重試的第二道保險）。
+</div>
+
+<div class="callout ok">
+<b>✅ segment_path 唯一索引已套用（2026-07-03）</b>
+DBA 已以 owner 帳號建立 <code>ux_dr_segment_path</code>（partial unique index，<code>WHERE segment_path IS NOT NULL</code>），全表現有 10 個索引。db.py 的 insert_record 與 bulk_insert_records 依賴它做 <code>ON CONFLICT (segment_path) DO UPDATE</code> 覆寫 — 同路徑重存會更新既有列且 <b>id 不變</b>；segment_path 為 NULL 的列（OK 未落檔）不受約束、永遠純 INSERT。
+</div>
+
+<!-- ============================================================ -->
+<h2 id="code"><span class="no">9</span>程式碼詳解</h2>
+
+<h3 id="code-split">9.1 split.py <span class="badge core">基座模組</span></h3>
+<p>負責「找到要處理的圖」與所有 config/log/cache 檔的讀寫。process.py 建構在它之上。模組級常量：<code>SPLIT_CONFIG_FILE</code>、<code>SPLIT_LOG_FILE</code>、<code>SPLIT_CACHE_FILE</code>（三個 JSON 檔名）、<code>DEFAULT_SPLIT_SIZE=20</code>。</p>
+
+<div class="fn"><div class="sig">setup_logging(log_path: Optional[str]) → None</div><div class="body">
+初始化 logging：Console handler 必開，<code>log_path</code> 有給就加開 UTF-8 檔案 handler。<code>force=True</code> 讓重複呼叫可重設（子進程／重入安全）。
+</div></div>
+
+<div class="fn"><div class="sig">load_config(config_file) → Dict ／ load_split_log(log_file) → Dict ／ save_split_log(log_data, log_file)</div><div class="body">
+JSON 讀寫三兄弟。讀取失敗一律回傳空 dict／預設結構並記 log，<b>不會拋例外</b>（呼叫端用空 dict 判斷要不要終止）。split_log 結構：<code>{last_updated, processed_dates[], total_images_split, total_segments}</code>，每跑一輪 append 一筆統計。
+</div></div>
+
+<div class="fn"><div class="sig">load_file_cache(cache_file) → Dict ／ save_file_cache(cache_data, cache_file) ／ get_dir_mtime(dir_path) → float ／ should_refresh_cache(cache_data, input_folder, date) → bool</div><div class="body">
+檔案掃描快取。快取結構：<code>{source_path, last_global_scan, date_caches: {date: {cached_at, nas_mtime, file_count, files[]}}}</code>。
+<code>should_refresh_cache</code> 在三種情況要求重掃：來源路徑變了、該日期沒快取、該日期目錄 mtime 變了。
+<span style="color:var(--amber)"><b>注意</b>：Windows/NAS 上「子目錄內」新增檔案不會改變日期目錄本身的 mtime，快取可能過期不自知 — 這就是目前 config 停用快取（<code>enable_file_cache=false</code>）的原因；要開就要記得 <code>--refresh-cache</code>。</span>
+</div></div>
+
+<div class="fn"><div class="sig">extract_path_meta(file_path) → Dict[str, str]</div><div class="body">
+從路徑「倒數第幾層」抽 meta：<code>hour=parts[-4]</code>、<code>board_id=parts[-3]</code>、<code>position=parts[-2]</code>（即 side）；若 <code>parts[-5]</code> 是 8 位數字再補 <code>date</code>。先把 <code>/</code> 統一成 <code>\</code> 再切。層數不足回空 dict — 呼叫端（process.py）會以 <code>"UNKNOWN"</code> 補預設值並因此跳過 DB 寫入。
+</div></div>
+
+<div class="fn"><div class="sig">is_valid_image(file_path, cfg) → bool</div><div class="body">
+兩道過濾：① 檔名必須以 <code>valid_prefixes</code> 其中之一開頭；② 檔名結尾的連續數字段若落在 <code>exclude_suffix</code> 黑名單則排除（如尾碼 001 是校正圖）。
+</div></div>
+
+<div class="fn"><div class="sig">read_image(image_path) → Optional[np.ndarray] ／ save_image(output_path, img) → bool</div><div class="body">
+讀圖走 <b>PIL 開檔 → 轉 RGB → cv2 轉 BGR</b>（PIL 對中文路徑/特殊格式容錯較好，cv2.imread 在 Windows 非 ASCII 路徑會失敗）；存圖用 <code>cv2.imwrite</code>。讀失敗回 None、存失敗回 False，皆記 log 不拋錯。
+</div></div>
+
+<div class="fn"><div class="sig">scan_images_by_date(input_folder, date_start, date_end, cfg, cache_data, enable_cache) → (List[str], Dict)</div><div class="body">
+主掃描器。把日期範圍展開成每一天，逐日決定「用快取 or 重掃」；重掃時用 <code>glob **/*.jpg</code>（含大寫副檔名）遞迴收檔 → <code>is_valid_image</code> 過濾 → 更新該日快取。回傳（排序去重後的全部路徑，更新後的快取資料）。
+</div></div>
+
+<div class="fn"><div class="sig">split_single_image(args) / split_images(...) / main() <span class="badge legacy">獨立模式</span></div><div class="body">
+split.py 自己也能當獨立程式跑（<code>python split.py</code>）：只切割存檔、不做偵測、不寫 DB。實務上已由 process.py 取代，保留當 debug 工具（例如想先確認切割結果再開偵測）。
+</div></div>
+
+<h3 id="code-process">9.2 process.py <span class="badge core">Pipeline 主體</span></h3>
+
+<h4>偵測核心（§6 的實作）</h4>
+<div class="fn"><div class="sig">DEFAULT_THRESHOLD=100 ／ DEFAULT_LEN_GRAY_MIN=5 ／ DEFAULT_LEN_NG=10 ／ DEFAULT_AREA_GRAY_MIN=20 ／ DEFAULT_AREA_NG=40 ／ DEFAULT_MERGE_DIST=30</div><div class="body">
+config 未指定時的閥值預設，與 server.DetectParams 的預設一致（改預設值兩邊都要看）。
+</div></div>
+
+<div class="fn"><div class="sig">_make_uf / _find / _union ／ _box_dist(b1, b2) → float ／ _merge_boxes(raw_boxes, max_dist) → List[box]</div><div class="body">
+Union-Find（路徑減半優化）做 bbox 聚合。<code>_box_dist</code> 算兩框的最短歐氏間距（重疊為 0）；<code>_merge_boxes</code> 對所有框做 O(n²) 兩兩比距、距離 ≤ max_dist 者 union，每群取外接框。box 格式為 <code>(x0, y0, x1, y1)</code>。
+</div></div>
+
+<div class="fn"><div class="sig">_classify_spot(w, h, area, params) → "NG"|"GRAY"|"OK"</div><div class="body">§6 表格的分級規則實作。params 必須含 len_ng / len_gray_min / area_ng / area_gray_min 四鍵。</div></div>
+
+<div class="fn"><div class="sig">detect_defect_full(img_bgr, params, return_mask=False) → Dict</div><div class="body">
+<b>偵測演算法唯一入口</b>。回傳 <code>{status, ng_count, gray_count, bboxes[]}</code>；<code>return_mask=True</code> 額外附 <code>{mask, img_w, img_h}</code>（給 server 的 /api/detect 疊圖用）。灰階用三通道平均，所以 BGR（pipeline）與 RGB（server 的 PIL）餵進來結果相同。bboxes 內每項：<code>{x0, y0, w, h, area, status}</code>。
+</div></div>
+
+<div class="fn"><div class="sig">_build_detect_params(cfg) → Dict</div><div class="body">把 split_config.json 的閥值欄位（white_threshold → threshold 等）收斂成偵測參數 dict，缺的補預設。pipeline 與 server /api/default-params 共用。</div></div>
+
+<h4>命名解析（§5 的實作）</h4>
+<div class="fn"><div class="sig">_parse_shot_label(base_name) → Optional[str] ／ _shot_number_for_segment(shot_label, segment_index) → Optional[int] ／ _derive_side_from_path(image_path) → Optional[str]</div><div class="body">
+分別為：從檔名 regex 抓 <code>Shot(\d+)_(\d+)</code>；區間起點＋index−1 再 clip 到終點；取路徑倒數第二層並驗證 ∈ {X1,X2,Y1,Y2}（不合法回 None，<b>不再有猜測 fallback</b> — 舊的 <code>_placeholder_side</code> 會亂寫 Y2 進 DB，2026-07-03 已移除）。
+</div></div>
+
+<div class="fn"><div class="sig">parse_segment_filename(path) → Optional[Dict]</div><div class="body">
+<b>Canonical parser</b>（§5.1）。把 segment 檔名解成 DB 欄位 dict：date, hour, substrate_id, side, image_layer, source_image, shot_number, shot_label, segment_index。前 4 段＋最後 1 段固定、中段 join 回 base_name。side 不合法或段數不足回 None（server 收到 None 回 400）。
+</div></div>
+
+<h4>Pipeline 執行</h4>
+<div class="fn"><div class="sig">split_and_detect_single(args=(image_path, output_folder, cfg)) → Dict　【子進程執行】</div><div class="body">
+單張圖的完整處理：讀圖 → 抽 meta → 沿寬度切 <code>split_size</code> 塊（最後一塊吃餘數）→ 每塊 <code>detect_defect_full</code> → 等級 ∈ <code>defect_status_to_save</code> 者存檔（檔名=§5.1 格式）→ 組出該塊的完整 DB record。
+回傳 <code>{filename, status, segments_count, ng_segments, gray_segments, saved_kake, records[], records_skipped, error}</code>。
+重點設計：<b>子進程不碰 DB</b>（records 帶回父進程集中寫）；<code>inspect_ts</code> 由 date+hour 組出（產線時間）；任一必填 meta 缺漏 → <code>db_writable=False</code>，整張圖的 records 跳過、只計入 records_skipped（檔案照常輸出）。
+</div></div>
+
+<div class="fn"><div class="sig">run_pipeline(input_folder, output_folder, date_start, date_end, cfg, log_data, cache_data, limit) → (stats, cache_data)</div><div class="body">
+單一日期範圍的主流程：掃描 →（可選）截斷至 limit 張 → 開一個 ProcessPoolExecutor（<b>整輪共用一個</b>，chunk 只是 DB 批次分段）→ 每 chunk 收齊 records 後 <code>bulk_insert_records</code> → 統計寫入 log_data。DB pool 開失敗只警告並跳過寫入，不中斷切割。回傳統計 dict：<code>{total, success, failed, segments, ng_segments, gray_segments, saved_kake, db_inserted}</code>。
+</div></div>
+
+<div class="fn"><div class="sig">parse_limit(value) → Optional[int] ／ main()</div><div class="body">
+CLI 進入點。參數：<code>--limit</code>（正整數或 all/0/none=不限）、<code>--refresh-cache</code>（清快取重掃）、<code>--config</code>（換配置檔）。main 依 date_ranges 逐範圍呼叫 run_pipeline，結束時存 split_log 與（若啟用）檔案快取。<code>freeze_support()</code> 是 Windows multiprocessing 必要呼叫。
+</div></div>
+
+<h3 id="code-db">9.3 db.py <span class="badge core">資料層</span></h3>
+
+<div class="fn"><div class="sig">_dsn() → str ／ _make_pool() ／ open_pool() ／ close_pool() ／ get_conn()（contextmanager）</div><div class="body">
+連線池生命週期。DSN 由 <code>.env</code>（python-dotenv 載入）組出。
+<span style="color:var(--green)"><b>2026-07-03 修正</b>：psycopg_pool 的 ConnectionPool close 後不能重 open（PoolClosed），舊寫法在多 date_range pipeline 第二輪起會靜默跳過 DB 寫入。現在 pool 為 lazy 全域變數，<code>open_pool()</code> 發現池子關閉就換一顆新的；<code>get_conn()</code> 也會自動補開。</span>
+<code>pool.connection()</code> context manager 出區塊時自動 commit（例外則 rollback）。
+</div></div>
+
+<div class="fn"><div class="sig">fetch_records(limit=700) → List[Dict] ／ _row_to_record(row) → Dict ／ count_records() → int</div><div class="body">
+撈最近 N 筆（<code>ORDER BY inspect_ts DESC</code>，吃 idx_dr_inspect_ts 索引）。<code>_row_to_record</code> 把 DB row 整形成前端 JSON（inspect_ts → ISO 字串）。
+</div></div>
+
+<div class="fn"><div class="sig">insert_record(rec: Dict) → int ／ _UPSERT_CLAUSE</div><div class="body">
+單筆寫入（/api/save-detection 與 /api/records 的後盾），JSONB 欄位自動 <code>Json()</code> 包裝。
+<span style="color:var(--green)"><b>覆寫語意（upsert）</b>：靠 <code>ux_dr_segment_path</code> 唯一索引走 <code>ON CONFLICT (segment_path) WHERE segment_path IS NOT NULL DO UPDATE</code> — Visual 重按儲存是「更新既有列」（id 不變），不是新增重複。共用的 SET 子句抽在 <code>_UPSERT_CLAUSE</code>。</span>
+</div></div>
+
+<div class="fn"><div class="sig">bulk_insert_records(records: Iterable[Dict]) → int</div><div class="body">
+Pipeline 批次寫入（executemany），同樣帶 <code>_UPSERT_CLAUSE</code> — 重跑 pipeline 不累積重複。
+<span style="color:var(--green)"><b>容錯</b>：整批失敗（如 NOT NULL violation）時降級為逐筆插入，壞的跳過記 log — 一筆壞資料不再拖垮整個 chunk。回傳實際成功筆數。</span>
+注意：同一批內不可出現重複的 segment_path（ON CONFLICT 限制「同列不可被影響兩次」）；pipeline 每塊只產一筆，天然滿足。
+</div></div>
+
+<div class="fn"><div class="sig">distinct_hours(date_from=None, date_to=None) → List[str]</div><div class="body">回傳實際有資料的 hour 清單（補零字串、字典序），可用日期界定範圍。供 Dashboard 顯示「時段缺口」提示。</div></div>
+
+<h3 id="code-server">9.4 server.py <span class="badge core">FastAPI 後端</span></h3>
+
+<p>啟動：<code>python -m uvicorn server:app --port 8000 --host 127.0.0.1</code>（開發時可加 <code>--reload</code>）。DB pool 的開關掛在 lifespan（啟動開、關閉收）。endpoint 明細見 §10，這裡講非 endpoint 的部分：</p>
+
+<div class="fn"><div class="sig">DetectParams（pydantic）／ DetectRequest ／ SaveDetectionRequest ／ RecordIn</div><div class="body">
+請求模型。<code>DetectParams</code> 六個欄位的預設值＝process.py 的 DEFAULT_*；<code>RecordIn</code> 是通用寫入（/api/records POST）的完整欄位模型，inspect_ts/date/hour 缺省時以 server 當下時間補齊。
+</div></div>
+
+<div class="fn"><div class="sig">_mask_to_png_b64(mask) → str ／ _image_to_jpg_b64(arr_rgb) → str</div><div class="body">
+把偵測遮罩轉亮黃色 RGBA PNG（前端 canvas overlay）、把原圖轉 JPEG（quality 85），都以 data-URI base64 回傳 — 前端不需要再打第二次請求拿圖。
+</div></div>
+
+<div class="fn"><div class="sig">_open_native_dialog(kind) ／ _dialog_lock</div><div class="body">
+用短命 Tk root 開原生資料夾／檔案對話框。<b>執行緒事實</b>：FastAPI 的 sync endpoint 跑在 threadpool（不是主執行緒）；Tk root 在「同執行緒建立＋銷毀、同時只有一個」前提下於 Windows 可用，所以用 <code>_dialog_lock</code> 序列化並發呼叫。仍要遵守：<b>uvicorn 不可用 --workers 2+</b>（多進程會讓對話框行為不可預期）。
+</div></div>
+
+<div class="callout info">
+<b>ℹ 安全性註記（內網工具的取捨）</b>
+CORS 全開、<code>/api/segments</code>／<code>/api/detect</code> 可讀取伺服器上任意路徑的影像檔 — 對綁 127.0.0.1 的單機品管工具可接受，但<b>不要</b>把這個 server 直接綁 0.0.0.0 對外開放；要上內網給多人用，需先加路徑白名單（限制在 split_output_folder 下）與基本認證。
+</div>
+
+<h3 id="code-seed">9.5 seed_records.py <span class="badge core">測試資料</span></h3>
+<div class="fn"><div class="sig">python seed_records.py [--n 700] [--wipe] [--seed 42]</div><div class="body">
+灌固定種子（可重現）的假資料進 detection_records，給 UI 空跑看視覺用。<code>--wipe</code> 先 DELETE 全表（id 序列不重置）。假資料的 side / shot_label / 日期分布會照 §5.2 規則生成（長邊末段已同步為 <code>Shot182_185</code>）；bboxes 為空陣列、segment_path 為 NULL（所以 Visual 開不了這些假記錄的圖，正常）。
+</div></div>
+
+<h3 id="code-ui">9.6 前端 ui/ <span class="badge core">單頁應用</span></h3>
+
+<h4>app.js — 殼層</h4>
+<div class="fn"><div class="sig">activateView(view) ／ bindTheme() ／ bindTabs() ／ bindResize()</div><div class="body">
+tab 切換（<code>.view.active</code> 顯示控制 + <code>data-view-only</code> 讓 topbar 的 KPI/篩選器只在 Dashboard 出現）、深淺主題切換（<code>html[data-theme]</code> + 重繪通知）、視窗 resize 以 rAF 節流轉發給兩個 view。<b>view 都是首次切入才 boot（延遲初始化）</b>，避免在隱藏容器上量 layout 得到 0。預設落在 Dashboard。
+</div></div>
+
+<h4>visual.js — 品管站（IIFE 模組，匯出 boot/onResize）</h4>
+<div class="fn"><div class="sig">狀態：segments[] ／ idx ／ params ／ defaultParams ／ lastDetect ／ inflight ／ rerunQueued</div><div class="body">
+<code>segments</code> 是 /api/segments 回的清單（{path, filename, folder_label}），<code>idx</code> 是目前瀏覽位置；<code>params</code> 是六個滑桿值。
+<span style="color:var(--green)"><b>2026-07-03 修正</b>：偵測請求進行中又觸發新請求（快速切圖／調參）時，舊版直接丟棄導致畫面與 idx 脫節；現在改為 <code>rerunQueued</code> 排隊，完成後自動以最新狀態補跑一次。</span>
+</div></div>
+<div class="fn"><div class="sig">buildThresholdPanel() ／ refreshSliderValues() ／ resetParams()</div><div class="body">依 <code>SLIDER_SPECS</code>（六個滑桿的 key/label/範圍）動態生成滑桿。<code>input</code> 事件只更新數字顯示，<code>change</code>（鬆手）才打偵測 — 避免拖曳過程狂發請求。重設鈕還原成 /api/default-params 抓到的預設。</div></div>
+<div class="fn"><div class="sig">loadSegments() ／ go(delta) ／ runDetect() ／ renderResult()</div><div class="body">
+載入清單 → <code>runDetect()</code> POST /api/detect → <code>drawImageWithBoxes</code>（原圖+彩色 bbox+標籤，NG 紅/GRAY 黃/OK 綠，OK 框不畫）與 <code>drawMask</code>（深灰底+亮黃遮罩）雙 canvas 呈現，皆處理 devicePixelRatio 與等比縮放。鍵盤：←/→ 換圖、Home/End 跳頭尾（輸入框聚焦時不攔截）。
+</div></div>
+<div class="fn"><div class="sig">saveCurrentDetection() ／ pickPath(kind)</div><div class="body">儲存鈕把 <code>lastDetect</code> 的結果連同 segment_path POST 到 /api/save-detection（覆寫語意）；pickPath 呼叫 /api/pick 開原生對話框、選完自動載入。</div></div>
+
+<h4>dashboard.js — 戰情室（IIFE 模組）</h4>
+<div class="fn"><div class="sig">常量：GW=1500, GH=1850 ／ SIDE_TO_EDGE ／ SHORT_INTERVALS(6) ／ LONG_INTERVALS(10) ／ INTERVAL_COLORS</div><div class="body">
+玻璃畫布邏輯尺寸、四邊對應（§5.3 圖 2）、shot 區間表（<b>與 seed_records.py 同步義務</b>，§5.2）、多選區間的循環配色。
+</div></div>
+<div class="fn"><div class="sig">loadData() ／ recordsToDefects(records) ／ generateClientMock(n) ／ usingMock</div><div class="body">
+啟動時 GET /api/records?n=700 → <code>recordsToDefects</code> 把 record 轉繪圖點：只取 NG/GRAY、由 shot_label 中點算沿邊位置、以確定性雜湊撒進邊緣帶（<b>非真實座標</b>，§5.3）。shot_label/side 為空的 record 防呆跳過。
+<span style="color:var(--green)"><b>2026-07-03 修正</b>：後端沒資料時 fallback 到 700 筆前端假資料，現在會在 topbar 顯示紅色「⚠ 模擬資料」徽章（<code>#mock-indicator</code>），不再無聲誤導。</span>
+</div></div>
+<div class="fn"><div class="sig">filterState ／ readFilters() ／ applyFilters() ／ resetFilters() ／ updateHourHint()</div><div class="body">
+日期範圍／時段（0–23）／基板 ID 三組篩選。<span style="color:var(--green)"><b>2026-07-03 修正</b>：時段解析改用 parseInt+NaN 判斷（舊寫法 <code>+value || 23</code> 會把輸入 0 誤當沒填）。</span>
+<code>updateHourHint</code> 打 /api/hours-available，在時段輸入旁顯示「缺 XX,YY 時」或「僅時段 …有資料」— 提醒使用者產線 hour 有缺口。
+</div></div>
+<div class="fn"><div class="sig">resize() ／ drawGlass() ／ drawDistLine() ／ drawDistLineSide() ／ drawDetail() ／ updateEdgeTotals()</div><div class="body">
+繪圖層。<code>resize()</code> 依容器可用空間算玻璃長寬比並精準設定 grid template；<code>drawGlass</code> 畫底板＋100mm 網格＋邊緣帶；上下（水平）與左右（垂直）折線圖各一支繪製函式；<code>drawDetail</code> 畫右卡的區間 bar chart 並記下 <code>detailBarRects</code> 供點擊命中；<code>updateEdgeTotals</code> 畫 topbar 旁的四邊總數 mini bar。全部 canvas 手刻、支援深淺主題與 DPR。
+</div></div>
+<div class="fn"><div class="sig">selectEdge() ／ toggleInterval() ／ renderDetail() ／ renderSubstrateList() ／ hitTestInterval()</div><div class="body">
+互動層：點折線圖選邊＋切換該區間選取（可跨邊多選，各自配色）；右卡在「未選區間→bar chart」與「已選→基板 ID 明細表」兩模式間切換，明細依總數排序、以彩色 marker 顯示各區間筆數。
+</div></div>
+
+<!-- ============================================================ -->
+<h2 id="api"><span class="no">10</span>API 對照表</h2>
+
+<div class="tablewrap"><table>
+<tr><th>Endpoint</th><th>參數</th><th>回傳／行為</th></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/default-params</code></td><td>—</td><td>讀 split_config.json 回偵測閥值六件組（缺項補程式預設）</td></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/default-folder</code></td><td>—</td><td>回 <code>{folder: split_output_folder}</code>，Visual 開頁預填</td></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/pick</code></td><td><code>kind=folder|file</code></td><td>開原生對話框（tkinter，鎖序列化）；取消回 <code>path=""</code></td></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/segments</code></td><td><code>folder</code>（可為資料夾或單檔）、<code>filter=all|ng|gray|ok</code></td><td>遞迴掃資料夾回區塊清單 <code>{count, segments[{path, filename, folder_label}]}</code>；folder_label 由路徑中的 /ng/ /gray/ /ok/ 判斷；路徑不存在回 404</td></tr>
+<tr><td><span class="badge post">POST</span> <code>/api/detect</code></td><td>body: <code>{segment_path, params?}</code></td><td><b>純唯讀</b>。回原圖 JPEG b64＋遮罩 PNG b64＋bboxes＋判定＋所用參數。<b>絕不寫 DB</b></td></tr>
+<tr><td><span class="badge post">POST</span> <code>/api/save-detection</code></td><td>body: <code>{segment_path, overall, ng_count, gray_count, bboxes, params}</code></td><td>Visual 儲存鈕入口。canonical parser 拆欄位（不符格式回 400），inspect_ts 由檔名 date+hour 組出，<b>覆寫</b>同 segment_path 舊記錄</td></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/records</code></td><td><code>n</code>=1..5000（預設 700）</td><td>最近 N 筆（inspect_ts DESC），Dashboard 資料來源</td></tr>
+<tr><td><span class="badge post">POST</span> <code>/api/records</code></td><td>body: RecordIn 全欄位</td><td>通用寫入（少用；save-detection 才是主入口）。時間欄缺省以 server 時間補</td></tr>
+<tr><td><span class="badge get">GET</span> <code>/api/hours-available</code></td><td><code>date_from?</code>、<code>date_to?</code>（yyyymmdd）</td><td>回實際有資料的 hour 清單，Dashboard 時段缺口提示用</td></tr>
+<tr><td><span class="badge get">GET</span> <code>/</code></td><td>—</td><td>StaticFiles 吐 <code>ui/index.html</code> 及其資源</td></tr>
+</table></div>
+
+<!-- ============================================================ -->
+<h2 id="fixes"><span class="no">11</span>2026-07-03 全面檢查與修復紀錄</h2>
+
+<p>本日對全專案做了功能檢查（模組匯入、parser／演算法單元測試、DB 唯讀查核、真實啟動 server 打全部 endpoint、pipeline E2E）並修復以下問題，<b>全部修復都已重跑測試驗證通過</b>：</p>
+
+<div class="tablewrap"><table>
+<tr><th style="width:34px">#</th><th>問題</th><th>影響</th><th>修復</th></tr>
+<tr><td>1 <span class="badge fixed">已修</span></td><td>db.py 連線池 close 後不能重開（PoolClosed）</td><td>多 date_range pipeline 第二輪起 DB 寫入<b>全部靜默跳過</b></td><td>pool 改 lazy 全域，open_pool 發現關閉即換新池；get_conn 自動補開。實測 open→close→open 通過</td></tr>
+<tr><td>2 <span class="badge fixed">已修</span></td><td>pipeline 的 inspect_ts 用 <code>datetime.now()</code>（處理時間）</td><td>DB 內 3498 筆與 date/hour 不一致；Dashboard 時間篩選失真</td><td>改由 date+hour 組出產線時間；<b>既有 3498 筆已一次性 UPDATE 校正</b>，現全表 0 筆不一致</td></tr>
+<tr><td>3 <span class="badge fixed">已修</span></td><td>seed_records.py 與 process.py 殘留 <code>Shot182_196</code></td><td>種子資料掉出 Dashboard bar chart</td><td>seed 同步為 <code>Shot182_185</code>；process.py 的 legacy 常量（含 <code>_shot_label_from_number</code> 等 4 個無人呼叫的舊函式）整批移除</td></tr>
+<tr><td>4 <span class="badge fixed">已修</span></td><td>meta 缺漏時仍組 record（含 None）送 DB</td><td>NOT NULL violation 會讓<b>整個 chunk</b>（最多 200 張圖×20 塊）批次寫入全滅</td><td>雙保險：worker 端 <code>db_writable</code> 判斷整張跳過並統計；db.py 整批失敗降級逐筆、壞的跳過記 log</td></tr>
+<tr><td>5 <span class="badge fixed">已修</span></td><td><code>_placeholder_side</code> fallback 恆寫 "Y2"</td><td>side 抓不到時 20 筆錯誤資料進 DB</td><td>移除 fallback；side 缺漏歸入 #4 的跳過邏輯</td></tr>
+<tr><td>6 <span class="badge fixed">已修</span></td><td>Visual 重複儲存產生重複記錄（DB 已實際出現 2 組）</td><td>Dashboard 重複計數</td><td>insert / bulk insert 皆改<b>覆寫語意</b>（<code>ON CONFLICT DO UPDATE</code>，同日 DBA 已建唯一索引）；既有重複已清除（留最新）</td></tr>
+<tr><td>7 <span class="badge fixed">已修</span></td><td>visual.js 偵測中切圖，請求被丟棄</td><td>畫面與目前位置脫節、狀態列錯位</td><td>inflight 中的觸發改為排隊，完成後以最新狀態補跑</td></tr>
+<tr><td>8 <span class="badge fixed">已修</span></td><td>dashboard.js 時段篩選輸入 0 被當沒填</td><td>「0～0 時」被解讀成「0～23 時」</td><td>parseInt + NaN 判斷</td></tr>
+<tr><td>9 <span class="badge fixed">已修</span></td><td>DB 空跑時 Dashboard 無聲顯示 700 筆假資料</td><td>戰情室顯示假資料無任何標示，有誤導風險</td><td>topbar 加紅色「⚠ 模擬資料」徽章；recordsToDefects 對 null shot_label/side 加防呆</td></tr>
+<tr><td>10 <span class="badge fixed">已修</span></td><td>server._analyze 與 process.detect_defect_full 重複實作</td><td>演算法兩份拷貝會漂移</td><td>detect_defect_full 加 return_mask 參數，server 直接共用；並將 deprecated 的 @app.on_event 改為 lifespan、/api/pick 加執行緒鎖</td></tr>
+<tr><td>11 <span class="badge fixed">已修</span></td><td>文件說 schema「18 欄、無 DDL 檔」</td><td>與實際不符（19 欄含 created_at、全 NOT NULL、9 索引）</td><td>由線上 DB 反向落地 <code>schema.sql</code>；本文件 §8 為正確版本</td></tr>
+<tr><td>12 <span class="badge fixed">已修</span></td><td>每個 chunk 重建 ProcessPoolExecutor</td><td>Windows spawn 成本高，純浪費</td><td>整輪共用一個 executor</td></tr>
+</table></div>
+
+<p>同日完成的資料夾整理：舊架構 8 檔移入 <code>legacy/</code>（見 legacy/README.md）；刪除可再生的 <code>process_run.log</code>（11MB）、<code>split_cache.json</code>（13MB）、<code>__pycache__</code>、雜項 <code>a.png</code>。</p>
+
+<!-- ============================================================ -->
+<h2 id="limits"><span class="no">12</span>已知限制與建議 Roadmap</h2>
+
+<h3>資料面</h3>
+<ul>
+  <li><b>hour 有缺口</b>：產線非 24 小時連續（目前資料只有 00、01 時段）。Dashboard 已有缺口提示，但空間分布圖仍只畫有資料的 shot。</li>
+  <li><b>shot_label 邊界</b>：長邊末段 <code>Shot182_185</code>。規格若變動，需同步改 <code>ui/dashboard.js</code> 與 <code>seed_records.py</code> 的 <code>LONG_INTERVALS</code>（§5.2）。</li>
+  <li><b>defect_type 恆為 yake</b>：schema 已預留，但 pipeline 沒有分辨刮痕／缺角等類型的邏輯。</li>
+</ul>
+
+<h3>架構面</h3>
+<ul>
+  <li><b>無 migration 工具</b>：schema 改動仍靠手動 ALTER＋同步更新 schema.sql。</li>
+  <li><b>無 CI／自動測試</b>：目前為手動 smoke test（§13 有指令）。</li>
+  <li><b>檔案快取的 mtime 盲區</b>：見 §7 <code>enable_file_cache</code> 說明。</li>
+  <li><b>單機安全模型</b>：見 §9.4 安全性註記，勿直接對外開放。</li>
+</ul>
+
+<h3>建議優先序</h3>
+<ol>
+  <li><span class="badge fixed">完成</span> <s><code>ux_dr_segment_path</code> 唯一索引 + <code>ON CONFLICT DO UPDATE</code> 升級</s> — 2026-07-03 DBA 建索引、db.py 已升級 upsert，覆寫測試通過（id 保持不變）。</li>
+  <li><span class="badge todo">待辦</span> <b>真實座標映射</b>：由 bboxes（區塊內像素座標）＋ shot_number ＋區塊寬度換算玻璃物理座標，取代 Dashboard 目前的邊緣帶隨機撒點。</li>
+  <li><span class="badge todo">待辦</span> <b>把 smoke test 腳本收進 repo</b>（如 <code>tests/smoke.py</code>）：模組匯入、parser、detect_defect_full、pool 重開、覆寫語意、live endpoint 全鏈路。</li>
+  <li><span class="badge todo">待辦</span> <b>defect_type 擴充</b>：若要辨識 kake（缺角）等類型，偵測核心與 Dashboard 的 TYPES 都已預留掛點。</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="ops"><span class="no">13</span>操作速查與排錯</h2>
+
+<div class="kbd-grid">
+<div class="card"><b>啟動 Web UI</b>
+<pre><code>python -m uvicorn server:app --reload ^
+  --port 8000 --host 127.0.0.1</code></pre>
+<p style="font-size:13px">瀏覽器開 http://127.0.0.1:8000/ 。<b>不可加 --workers 2+</b>（檔案對話框會壞）。</p></div>
+
+<div class="card"><b>跑 Pipeline</b>
+<pre><code>python process.py                # 全部
+python process.py --limit 50     # 每範圍前 50 張
+python process.py --refresh-cache</code></pre></div>
+
+<div class="card"><b>灌假資料</b>
+<pre><code>python seed_records.py --n 700 --wipe</code></pre>
+<p style="font-size:13px">固定種子可重現；--wipe 先清空表。</p></div>
+
+<div class="card"><b>DB 快速健檢</b>
+<pre><code>python -c "import db; db.open_pool(); ^
+print(db.count_records())"</code></pre></div>
+</div>
+
+<h3>排錯對照</h3>
+<div class="tablewrap"><table>
+<tr><th>症狀</th><th>檢查／處置</th></tr>
+<tr><td>Port 8000 被佔</td><td><code>Get-NetTCPConnection -LocalPort 8000</code> 拿 OwningProcess。特別注意 uvicorn 死掉但 multiprocessing 子進程還活著的情況 — 要一起殺。</td></tr>
+<tr><td>DB 連不上</td><td>先確認 PostgreSQL Windows 服務有起來；再跑上方 DB 健檢一行指令；檢查 <code>.env</code> 是否存在且密碼正確。</td></tr>
+<tr><td>檔案對話框卡住／不出現</td><td>確認 uvicorn 是單 worker；對話框可能開在其他視窗後面（程式已設 topmost，仍偶發）。連續狂點會被鎖序列化，屬正常。</td></tr>
+<tr><td>Dashboard 顯示「⚠ 模擬資料」</td><td>代表 /api/records 沒撈到資料：DB 空（跑 seed_records 或 pipeline）或後端掛了（看 uvicorn console）。</td></tr>
+<tr><td>Pipeline log 出現「meta 缺漏未寫 DB」</td><td>該圖路徑不符 <code>date/hour/board_id/side/檔名</code> 約定（§5.1）。檔案仍會輸出，但不入庫 — 檢查 input_folder 的目錄層級。</td></tr>
+<tr><td>儲存回 400「does not match expected format」</td><td>選到的圖不是 pipeline 輸出的 segment（檔名非 §5.1 格式）。只有 canonical 檔名能存 DB。</td></tr>
+</table></div>
+
+<p class="meta" style="margin-top:48px">— 文件結束。維護提醒：改了 schema 請同步 <code>schema.sql</code> 與本文件 §8；改了 shot 區間請同步 §5.2 所列兩處常量；新增 endpoint 請補 §10 表格。 —</p>
+
+</main>
+</div>
+</body>
+</html>

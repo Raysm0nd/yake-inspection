@@ -1,0 +1,41 @@
+{
+  "input_folder": "D:\\yake_test2\\tess_data\\05_uw03\\Tanmen_Trace",
+  "split_output_folder": "D:\\split_data\\kake_test",
+  "date_ranges": [
+    {
+      "name": "2025-04-01 測試",
+      "date_start": "20250401",
+      "date_end": "20250401"
+    }
+  ],
+  "valid_prefixes": [
+    "CenterImage"
+  ],
+  "exclude_suffix": [
+    "001",
+    "111",
+    "112",
+    "131",
+    "132",
+    "186",
+    "151",
+    "152"
+  ],
+  "split_size": 20,
+  "max_workers": 4,
+  "chunk_size": 200,
+  "enable_file_cache": false,
+  "enable_db_insert": true,
+  "defect_status_to_save": [
+    "NG",
+    "GRAY"
+  ],
+  "watch_quiet_minutes": 15,
+  "watch_poll_seconds": 60,
+  "white_threshold": 39,
+  "len_ng": 10,
+  "area_ng": 40,
+  "len_gray_min": 5,
+  "area_gray_min": 20,
+  "merge_dist": 30
+}
